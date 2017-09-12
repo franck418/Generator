@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${mapperPackage}.${moduleName}.${className}Mapper" > 
+	<!-- Result Map-->
+	<resultMap id="BaseResultMap" type="${beanPackage}.${moduleName}.$!{className}Bean" >
+	#foreach($item in ${columnDatas})	
+		#if($item.columnKey == 'PRI')
+			
+		<id column="$item.columnName" property="$item.colField" />
+		#else
+		
+		<result column="$item.columnName" property="$item.colField" />
+		#end
+	#end
+	
+	</resultMap>
+       
+	<!-- $!{tableName} table all fields -->
+	<sql id="Base_Column_List" >
+		 $!{SQL.columnFields}
+	</sql>
+   
+   
+	<!-- 查询条件 -->
+	<sql id="Example_Where_Clause">
+		<trim prefix="where" prefixOverrides="and" >
+		#foreach($item in $!{columnDatas})
+			#set($testStr = $!item.colField + " != null")
+			#if($!item.dataType == 'String')
+				#set($testStr = $!testStr + " and " + $!item.colField + " != ''")
+		 	#end
+
+			#if($!item.dataType == 'String')
+			<if test="$!testStr" >
+				and  LOCATE('#{$!item.colField}',$!item.columnName)>0
+			</if>
+
+			#else
+			<if test="$!testStr" >
+			    and $!item.columnName =  #{$!item.colField}
+			</if>
+			#end
+		#end
+		</trim>
+	</sql>
+   
+	<!-- 插入记录 -->
+	<insert id="add" useGeneratedKeys="true" keyProperty="id" parameterType="Object" >
+	  	insert into ${tableName} 
+	  	<trim prefix="(" suffix=")" suffixOverrides="," >
+	  	#foreach($item in $!{columnDatas})
+			#set($testStr = $!item.colField + " != null")
+			#if($!item.dataType == 'String')
+				#set($testStr = $!testStr + " and " + $!item.colField + " != ''")
+	 		#end
+	 	
+			<if test="$!testStr" >
+			    $!item.columnName ,
+			</if>
+		#end
+		
+		</trim>
+		<trim prefix=" value (" suffix=")" suffixOverrides="," >
+		#foreach($item in $!{columnDatas})
+			#set($testStr = $!item.colField + " != null")
+			#if($!item.dataType == 'String')
+				#set($testStr = $!testStr + " and " + $!item.colField + " != ''")
+	 		#end
+	 	
+			<if test="$!testStr" >
+			    #{$!item.colField},
+			</if>
+		#end
+		
+		</trim>
+	</insert>
+
+	<!-- 根据id，修改记录-->  
+	<update id="update" parameterType="Object" >
+		$!{SQL.update}
+	</update>
+	 
+	 <!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateBySelective" parameterType="Object" >
+		update ${tableName} set
+		<trim suffixOverrides="," >
+			#foreach($item in $!{columnDatas})
+			#set($testStr = $!item.colField + " != null")
+			#if($!item.dataType == 'String')
+				#set($testStr = $!testStr + " and " + $!item.colField + " != ''")
+	 		#end
+	 		
+			<if test="$!testStr" >
+			   $!item.columnName = #{$!item.colField},
+			</if>
+			#end
+		</trim>
+		where $!keyColumn.columnName = #{$!keyColumn.colField}
+	</update>
+	
+	<!-- 删除记录 -->
+	<update id="delete" parameterType="Object">
+		update ${tableName} set is_del = 1  where $!keyColumn.columnName = #{$!keyColumn.colField}
+	</update>
+	 
+	<!-- 根据id查询 ${codeName} -->
+	<select id="queryById"  resultMap="BaseResultMap" parameterType="Object">
+		select <include refid="Base_Column_List" /> 
+	 from ${tableName} where $!keyColumn.columnName = #{$!keyColumn.colField}
+	</select>
+	
+	<!-- ${codeName} 列表总数-->
+	<select id="queryByCount" resultType="java.lang.Integer"  parameterType="Object">
+		select count(1) from ${tableName} 
+		<include refid="Example_Where_Clause"/>
+	</select>
+	  	
+	<!-- 查询${codeName}列表 -->
+	<select id="queryByList" resultMap="BaseResultMap"  parameterType="Object">
+		select 
+		<include refid="Base_Column_List"/>
+		from ${tableName} 
+		<include refid="Example_Where_Clause"/>
+		<if test="pager != null and pager.orderCondition != null and pager.orderCondition != ''" >
+	      ${pager.orderCondition}
+	    </if>
+	    <if test="pager != null and pager.mysqlQueryCondition != null and pager.mysqlQueryCondition != ''" >
+	       ${pager.mysqlQueryCondition}
+	    </if>
+	</select>
+  	
+</mapper>   
