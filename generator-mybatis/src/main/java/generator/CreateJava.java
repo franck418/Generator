@@ -25,10 +25,8 @@ public class CreateJava {
 //	 private static String rootPath =
 //	 "E:\\Source\\IDEAWORK\\Bmind\\auto-generator";
 
-
+	//rootPath 在generator.properties的gnt.root设置。
 	private static String rootPath = GeneratorConfig.rootPath;
-
-	// private static String actionPath =
 
 
 	/**
@@ -171,6 +169,7 @@ public class CreateJava {
 		//
 		// -------------------生成文件代码---------------------/
 		String srcRoot = rootPath + "src/main/java/";
+		String mainRoot = rootPath + "src/main/";
 		
 		
 		CommonPageParser.WriterPage(context, "TempAtomicity.java",srcRoot, atomicityPath); //生成实体Bean
@@ -185,7 +184,7 @@ public class CreateJava {
 
 		CommonPageParser.WriterPage(context, "TempServiceImpl.java", srcRoot, serviceImplPath);// 生成ServiceImpl
 //
-		CommonPageParser.WriterPage(context, "TempMapper.xml", srcRoot, sqlMapperPath);// 生成Mybatis // xml配置文件
+		CommonPageParser.WriterPage(context, "TempMapper.xml", mainRoot, sqlMapperPath);// 生成Mybatis // xml配置文件
 //
 //		CommonPageParser.WriterPage(context, "TempController.java", srcRoot, controllerPath);// 生成Controller // 相当于接口
 																								

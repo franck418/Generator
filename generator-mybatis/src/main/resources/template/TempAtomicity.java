@@ -1,8 +1,11 @@
+#if(${moduleName} != "")
 package ${atomicityPackage}.${moduleName};
+#else
+package ${atomicityPackage};
+#end
 
 import java.io.Serializable;
 
-import com.bmind.api.entity.annotation.Comment;
 
 
 public class ${className} implements Serializable {

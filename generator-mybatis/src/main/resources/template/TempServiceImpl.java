@@ -1,13 +1,17 @@
-package ${servicePackage}.${moduleName};
 
+#if(${moduleName} != "")
+package ${servicePackage}.${moduleName}.impl;
+#else
+package ${servicePackage}.impl;
+#end
 //import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ${mapperPackage}.${className}Mapper;
-import ${BeanPackage}.${className};
-import ${mapperPackage}.I${className}Service;
+import ${servicePackage}.I${className}Service;
+import ${beanPackage}.${className}Bean;
 
 /**
  * 
@@ -23,7 +27,7 @@ public class ${className}ServiceImpl extends BasicServiceImpl implements I${clas
     private ${className}Mapper mapper;
 
 		
-	public ${className}Mapper<${className}> getMapper() {
+	public ${className}Mapper<${className}Bean> getMapper() {
 		return mapper;
 	}
 

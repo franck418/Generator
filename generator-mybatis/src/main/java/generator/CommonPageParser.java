@@ -47,7 +47,9 @@ public class CommonPageParser {
 		try{
 			//获取文件模板根路径
 			//\template\TempMapper.xml
-			String  templateBasePath = GeneratorConfig.rootPath + "src/main/resources/template";//"Constant.WORK_TEMPLATE_PATH;
+
+			String  templateBasePath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "/template";//当前项目目录获取模板
+			//String  templateBasePath = GeneratorConfig.rootPath + "src/main/resources/template";//生成目标项目的目录获取模板
 			Properties properties = new Properties();
 			properties.setProperty(Velocity.RESOURCE_LOADER,"file");
 			properties.setProperty("file.resource.loader.description","Velocity File Resource Loader");

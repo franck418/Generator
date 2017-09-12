@@ -1,4 +1,9 @@
+
+#if(${moduleName} != "")
 package ${servicePackage}.${moduleName};
+#else
+package ${servicePackage};
+#end
 
 import org.springframework.stereotype.Service;
 
